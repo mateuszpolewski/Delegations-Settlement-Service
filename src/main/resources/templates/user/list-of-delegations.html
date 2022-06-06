@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>Rozliczanie delegacji</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="/css/style-html.css"/>
+
+    <style>
+/* Bootstrap 4 text input with search icon */
+
+.has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+.search-bar {
+    padding:30px 0px 30px 0px;
+
+}
+.skip-page-button {
+    padding: 0px 15px 0px 15px;
+}
+.center-links {
+    padding: 20px 0px 20px 0px;
+    text-align:center;
+}
+.table-col-name {
+    color:#F5F5F5;
+}
+.link-buttons {
+    border-width: 1px; border-style: solid; border-color: black; padding:4px; color: black; border-radius: 2px 2px;
+}
+.table {
+    box-shadow: 0 2px 3px 0 hsla(0, 0%, 0%, 0.1);
+
+}
+
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a class="navbar-brand navbar-back" href="#">
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-90deg-left" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4z"/>
+        </svg>
+    </a>
+    <a class="navbar-brand navbar-home-title" href="/home">Strona główna<span class="sr-only">(current)</span></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+            <li class="nav-item dropdown navbar-right active">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Ustawienia
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="/edit-profile">Pokaż profil</a>
+                    <a class="dropdown-item" href="/logout">Wyloguj</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div style=" margin:0 auto;">
+    <div class="container">
+        <div style="height:100px">
+            <form th:action="@{/auth/delegation-list/page/1}" class="search-bar">
+                <input type="hidden" name="sortField" th:value="${sortField}" />
+                <input type="hidden" name="sortDir" th:value="${sortDir}" />
+
+                <h6>Wyszukaj dane użytkownika: </h6>
+                <div class="input-group col-md-8">
+                    <input placeholder="Wyszukaj dane delegacji" class="form-control py-2 border-right-0 border" type="search" name="keyword" id="example-search-input keyword" th:value="${keyword}" required />
+                    <span class="input-group-append">
+                    <div class="input-group-text bg-transparent"><i class="fa fa-search"></i></div>
+                </span>
+                </div>
+            </form>
+
+            <div class="container-fluid">
+            <table class="table w-500 p-3 align-middle table-striped">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col"><a class="table-col-name" th:href="@{'/auth/delegation-list/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir}}">#</a></th>
+                    <th class="col-sm-3" scope="col"><a class="table-col-name" th:href="@{'/auth/delegation-list/page/' + ${currentPage} + '?sortField=name&sortDir=' + ${reverseSortDir}}">Tytuł</a></th>
+                    <th scope="col"><a class="table-col-name" th:href="@{'/auth/delegation-list/page/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${reverseSortDir}}">Data rozpoczęcia</a></th>
+                    <th scope="col"><a class="table-col-name" th:href="@{'/auth/delegation-list/page/' + ${currentPage} + '?sortField=email&sortDir=' + ${reverseSortDir}}">Data zakończenia</a></th>
+                    <th scope="col"><a class="table-col-name" th:href="@{'/auth/delegation-list/page/' + ${currentPage} + '?sortField=phoneNumber&sortDir=' + ${reverseSortDir}}">Kraj docelowy</a></th>
+                    <th scope="col"><a class="table-col-name" th:href="@{'/auth/delegation-list/page/' + ${currentPage} + '?sortField=position&sortDir=' + ${reverseSortDir}}">Miasto docelowe</a></th>
+                    <th class="col-sm-2" scope="col"><a class="table-col-name" th:href="@{'/auth/delegation-list/page/' + ${currentPage} + '?sortField=comment&sortDir=' + ${reverseSortDir}}">Dodano przez</a></th>
+                    <th scope="col"><a class="table-col-name" th:href="@{'/auth/delegation-list/page/' + ${currentPage} + '?sortField=role&sortDir=' + ${reverseSortDir}}">Status</a></th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="delegation : ${delegations}">
+                    <tr th:id="'delegationTableRow' + ${delegation.id}">
+                        <td th:text="${delegation.id}"></td>
+                        <td th:text="${delegation.title}"></td>
+                        <td th:if="${delegation.getDelegationStatus().getStatus() != 'FINISHED' && delegation.getDelegationStatus().getStatus() != 'SETTLED'}" th:text="${delegation.startDate.toString().substring(0,10)}"></td>
+                        <td th:if="${delegation.getDelegationStatus().getStatus() != 'FINISHED' && delegation.getDelegationStatus().getStatus() != 'SETTLED'}" th:text="${delegation.endDate.toString().substring(0,10)}"></td>
+                        <td th:if="${delegation.getDelegationStatus().getStatus() == 'FINISHED' || delegation.getDelegationStatus().getStatus() == 'SETTLED'}" th:text="${delegation.realStartDateTime.toString().substring(0,10)}"></td>
+                        <td th:if="${delegation.getDelegationStatus().getStatus() == 'FINISHED' || delegation.getDelegationStatus().getStatus() == 'SETTLED'}" th:text="${delegation.realEndDateTime.toString().substring(0,10)}"></td>
+                        <td th:text="${delegation.destinationCountry}"></td>
+                        <td th:text="${delegation.destinationCity}"></td>
+                        <td th:text="${delegation.getUser().getName()} + ' ' + ${delegation.getUser().getLastName()}"></td>
+                        <td th:text="${delegation.getDelegationStatus().getPolishStatus()}"></td>
+                        <td><a th:id="'delegationPreview' + ${delegation.id}" class="link-buttons" th:href="@{/auth/delegation/{id}(id=${delegation.id})}">Podgląd</a></td>
+
+                        <script th:inline="javascript">
+                        /*<![CDATA[*/
+                            var flag = [[${delegation.getDelegationStatus().getStatus()}]];
+                            var id = [[${delegation.getId()}]];
+                            delegationDeleted = function() {
+                            if(flag == "CANCELLED" || flag == "REJECTED") {
+                                document.getElementById('delegationTableRow' + id).style.color = "#d00000";
+                                document.getElementById('delegationPreview' + id).style.color = "#d00000";
+                            }
+                        };
+                        delegationDeleted();
+                        /*]]>*/
+                    </script>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+            <div class="center-links">
+                <div>
+                    <a class="link-buttons" th:if="${currentPage > 1}" th:href="@{'/auth/delegation-list/page/1'}">Pierwsza strona</a>
+                    <span class="link-buttons" th:unless="${currentPage > 1}">Pierwsza strona</span>
+
+                    <a class="link-buttons skip-page-button" th:if="${currentPage > 1}" th:href="@{'/auth/delegation-list/page/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Poprzednia strona</a>
+                    <span class="link-buttons skip-page-button" th:unless="${currentPage > 1}">Poprzednia strona</span>
+
+                    <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+            <a th:if="${currentPage != i}" th:href="@{'/auth/delegation-list/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null ?  '&keyword=' + keyword : ''}}">[[${i}]]</a>
+            <span th:unless="${currentPage != i}">[[${i}]]</span>
+            &nbsp;
+        </span>
+                    <a class="link-buttons skip-page-button" th:if="${currentPage < totalPages}" th:href="@{'/auth/delegation-list/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Następna strona</a>
+                    <span class="link-buttons skip-page-button" th:unless="${currentPage < totalPages}">Następna strona</span>
+
+                    <a class="link-buttons" th:if="${currentPage < totalPages}" th:href="@{'/auth/delegation-list/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Ostatnia strona</a>
+                    <span class="link-buttons" th:unless="${currentPage < totalPages}">Ostatnia strona</span>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+<div style="position:relative; margin-top:560px;">
+    <div style="width:1200px; margin:auto;">
+        <div th:if="${successMessage!=null}" style="text-align: center;" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span class="text-success" th:utext="${successMessage}"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</body>
+</html>

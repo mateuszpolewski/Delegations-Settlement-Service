@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>Rozliczanie delegacji</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="/css/style-html.css"/>
+
+    <style>
+        .container{
+            margin:20px 20px 20px 20px;
+        }
+        .del-text {
+            font-size:20px;
+        }
+        th, td {
+            padding: 15px;
+        }
+        .container {
+            text-aling:center;
+        }
+
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a class="navbar-brand navbar-back" href="#">
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-90deg-left" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4z"/>
+        </svg>
+    </a>
+    <a class="navbar-brand navbar-home-title" href="/home">Strona główna<span class="sr-only">(current)</span></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+            <li class="nav-item dropdown navbar-right active">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Ustawienia
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="/edit-profile">Pokaż profil</a>
+                    <a class="dropdown-item" href="/logout">Wyloguj</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="outer-container d-flex justify-content-center">
+    <div class="container">
+        <div class="col-md-20 offset-md-3">
+            <p ></p>
+            <p ></p>
+            <table>
+                <tr>
+                    <td class="del-text" th:text="*{delegation.title}"></td>
+                    <td class="del-text" th:text="*{delegation.description}"></td>
+                </tr>
+                <tr>
+                    <td class="del-text" th:text="*{delegation.destinationCountry}"></td>
+                    <td class="del-text" th:text="*{delegation.destinationCity}"></td>
+                </tr>
+                <tr>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() != 'FINISHED' && delegation.getDelegationStatus().getStatus() != 'SETTLED'}" class="del-text">Planowana data rozpoczęcia: </td>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() != 'FINISHED' && delegation.getDelegationStatus().getStatus() != 'SETTLED'}" class="del-text" th:text="${delegation.startDate.toString().substring(0,10)}"></td>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() == 'FINISHED' || delegation.getDelegationStatus().getStatus() == 'SETTLED'}" class="del-text">Data rozpoczęcia: </td>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() == 'FINISHED' || delegation.getDelegationStatus().getStatus() == 'SETTLED'}" class="del-text" th:text="${delegation.realStartDateTime.toString().substring(0,16)}"></td>
+                </tr>
+                <tr>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() != 'FINISHED' && delegation.getDelegationStatus().getStatus() != 'SETTLED'}" class="del-text">Planowana data zakończenia: </td>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() != 'FINISHED' && delegation.getDelegationStatus().getStatus() != 'SETTLED'}" class="del-text" th:text="${delegation.endDate.toString().substring(0,10)}"></td>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() == 'FINISHED' || delegation.getDelegationStatus().getStatus() == 'SETTLED'}" class="del-text">Data zakończenia: </td>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() == 'FINISHED' || delegation.getDelegationStatus().getStatus() == 'SETTLED'}" class="del-text" th:text="${delegation.realEndDateTime.toString().substring(0,16)}"></td>
+                </tr>
+                <tr>
+                    <td class="del-text">Dodano przez: </td>
+                    <td class="del-text" th:text="${delegation.getUser().getName()} + ' ' + ${delegation.getUser().getLastName()}"></td>
+                </tr>
+                <tr >
+                    <td th:if="${delegation.getDelegationStatus().getStatus() == 'WAITING'}" class="del-text">Wnioskowana zaliczka: </td>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() == 'FINISHED'}" class="del-text">Przekazana zaliczka: </td>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() == 'SETTLED'}" class="del-text">Przekazana zaliczka: </td>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() == 'APPROVED'}" class="del-text">Przekazana zaliczka: </td>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() == 'WAITING'}" class="del-text" th:text="${delegation.advancedPayment} + ' zł'"></td>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() == 'FINISHED'}" class="del-text" th:text="${delegation.advancedPayment} + ' zł'"></td>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() == 'SETTLED'}" class="del-text" th:text="${delegation.advancedPayment} + ' zł'"></td>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() == 'APPROVED'}" class="del-text" th:text="${delegation.advancedPayment} + ' zł'"></td>
+                </tr>
+                <tr>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() == 'SETTLED'}" class="del-text">Należność dla pracownika: </td>
+                    <td th:if="${delegation.getDelegationStatus().getStatus() == 'SETTLED'}" class="del-text" th:text="${delegation.summaryCost} + ' zł'"></td>
+                </tr>
+            </table>
+
+        <div th:switch="${delegation.getDelegationStatus().getStatus()}">
+            <div th:case="'WAITING'">
+                        <div class="col-md-12 owner-form" sec:authorize="hasAuthority('OWNER')">
+                            <form autocomplete="off" action="#" th:action="@{/auth/delegation/{id}(id = ${delegation.id})}"
+                                  th:object="${delegationForPayment}" method="post" class="form-inline"
+                                  role="form">
+                                <div class="form-group mb-3">
+                                    <label th:if="${#fields.hasErrors('paymentTemp')}" th:errors="*{paymentTemp}"
+                                           class="validation-message"></label><br>
+                                    <label style="margin-right:10px;">Zmień wnioskowaną zaliczkę: </label>
+                                    <input type="text" th:field="*{paymentTemp}" placeholder="1000 [PLN]"
+                                           class="form-control" required/>
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-primary btn-block">Uaktualnij</button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                <p class="d-inline p-2" sec:authorize="hasAuthority('USER')"><a class="btn btn-info" th:href="@{/user/edit-delegation/{id}(id=${delegation.id})}">Edytuj delegację</a></p>
+                <p class="d-inline p-2" sec:authorize="hasAuthority('USER')"><a class="btn btn-info" th:href="@{/user/delete-delegation/{id}(id=${delegation.id})}">Anuluj delegację</a></p>
+
+                <p class="d-inline p-2" sec:authorize="hasAuthority('OWNER')"><a class="btn btn-info" th:href="@{/owner/approve-delegation/{id}(id=${delegation.id})}">Zatwierdź delegację</a></p>
+                <p class="d-inline p-2" sec:authorize="hasAuthority('OWNER')"><a class="btn btn-info" th:href="@{/owner/reject-delegation/{id}(id=${delegation.id})}">Odrzuć delegację</a></p>
+            </div>
+            <div th:case="'APPROVED'">
+                <p class="d-inline p-2"><a class="btn btn-info" sec:authorize="hasAuthority('USER')" th:href="@{/auth/delegation/{id}/expenses(id=${delegation.id})}">Koszty</a></p>
+                <p class="d-inline p-2"><a class="btn btn-info" sec:authorize="hasAuthority('USER')" th:href="@{/user/delegation/{id}/finish-delegation(id=${delegation.id})}">Zakończ delegację</a></p>
+            </div>
+            <div th:case="'FINISHED'">
+                <p class="d-inline p-2"><a class="btn btn-info" sec:authorize="hasAuthority('ACCOUNTANT')" th:href="@{/auth/delegation/{id}/expenses(id=${delegation.id})}">Koszty</a></p>
+                <p class="d-inline p-2"><a class="btn btn-info"  sec:authorize="hasAuthority('ACCOUNTANT')" th:href="@{/accountant/delegation/{id}/expenses-summary/(id=${delegation.id})}">Przejdź do podsumowania</a></p>
+            </div>
+            <div th:case="'SETTLED'">
+                <p><a class="btn btn-info d-inline p-2" sec:authorize="hasAnyAuthority('OWNER','ACCOUNTANT')" th:href="@{/auth/delegation-pdf/{id}(id=${delegation.id})}">Generuj plik PDF</a></p>
+            </div>
+            <div th:case="'REJECTED'">
+                <h2>Delegacja została odrzucona</h2>
+            </div>
+            <div th:case="'CANCELLED'">
+                <h2>Delegacja została anulowana</h2>
+            </div>
+        </div>
+            <div style="margin-top:10px; width:500px;">
+                <div th:if="${successMessage!=null}" style="text-align: center;" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span class="text-success" th:utext="${successMessage}"></span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+    </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</body>
+</html>
