@@ -2,7 +2,7 @@
 * [General info](#general-info)
 * [Technologies](#technologies)
 * [Setup](#setup)
-* [Documentation](#documentation)
+* [Example screenshots](#example-screenshots)
 ## General info
 Web based application, made to optimize processes around organisating delegations - including creating business trip requests, storing settlement progress information and creating raports out of stored data.
 ## Technologies
@@ -27,7 +27,7 @@ Finally use:
 mvn spring-boot:run
 ```
 The app will start running at http://localhost:8080.
-## Documentation
+## Example screenshots
 <p align="center">
   <img width="560" height="270" src="https://i.postimg.cc/RCJFHFr3/home1.png"><br/>
   <i>Owner homepage</i>
