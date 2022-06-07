@@ -12,4 +12,4 @@ Web based application, made to optimize processes around organisating delegation
 - iText PDF
 - Spring Email
 # Documentation
-![alt text]([http://url/to/img.png](https://postimg.cc/hJ5cWmv5))
+[![delegations.png](https://i.postimg.cc/ydVdRXHs/delegations.png)](https://postimg.cc/hJ5cWmv5)
