@@ -13,11 +13,17 @@ Web based application, made to optimize processes around organisating delegation
 - Spring Email
 # Documentation
 <p align="center">
-  <img width="460" height="300" src="https://i.postimg.cc/RCJFHFr3/home1.png">
+  <img width="600" height="270" src="https://i.postimg.cc/RCJFHFr3/home1.png">
 </p>
 
-[![employees.png](https://i.postimg.cc/dVjDVSb4/employees.png)](https://postimg.cc/TKhTkQYD)
+<p align="center">
+  <img width="600" height="270" src="https://i.postimg.cc/dVjDVSb4/employees.png">
+</p>
 
-[![delegations.png](https://i.postimg.cc/ydVdRXHs/delegations.png)](https://postimg.cc/hJ5cWmv5)
+<p align="center">
+  <img width="600" height="270" src="https://i.postimg.cc/ydVdRXHs/delegations.png">
+</p>
 
-[![expenses.png](https://i.postimg.cc/ZRCqjYCM/expenses.png)](https://postimg.cc/62xwpXVr)
+<p align="center">
+  <img width="600" height="270" src="https://i.postimg.cc/ZRCqjYCM/expenses.png">
+</p>
